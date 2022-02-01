@@ -191,13 +191,14 @@ body {
         padding: 24px 8px;
     }
 
+    /* Project Box */
     .project-box {
         display: flex;
         align-items: center;
         gap: 16px;
         background-color: white;
         margin-bottom: 8px;
-        border-radius: 10px;
+        border-radius: 15px;
         border: 0.25px solid gainsboro;
         padding: 12px 24px;
     }
@@ -215,4 +216,16 @@ body {
         font-size: 24px;
         font-family: 'Roboto Condensed';
         font-weight: 500;
+    }
+
+    /* Task box */
+    .task-box {
+        margin: 0 24px;
+        padding: 12px 24px;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        font-size: 22px;
+        gap: 16px;
+        border-bottom: 0.25px solid black;  
     }
