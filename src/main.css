@@ -1,0 +1,218 @@
+
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+/* Reset */
+*, *::after, *::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Quicksand', sans-serif;
+}
+
+body {
+    background-color: whitesmoke;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Form */
+.form-wrapper {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.form-container {
+    width: 30vw;
+    background-color: white;
+    padding: 24px 32px;
+}
+
+.project-form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-form > * {
+    flex: 1 100%;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.project-form label {
+    font-size: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.project-form input, .project-form textarea {
+    font-size: 14px;
+    padding: 4px;
+}
+
+.project-form legend {
+    text-align: center;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.project-form span {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.project-submit {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    border: 0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background-color: rgb(255,36,0);
+    cursor: pointer;
+}
+
+/* Header */
+.header-container {
+    background-color: rgb(255,36,0);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 48px;
+}
+
+.header-title {
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.nav-list {
+    display: flex;
+    gap: 24px;
+}
+
+.nav-list > * {
+    color: white;
+    font-weight: 400;
+    font-size: 24px;
+    list-style-type: none;
+}
+
+/* Mid-content */
+.mid-content {
+    display: flex;
+    flex: 1;
+}
+
+.side-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 12px;
+    flex: 1 25vw;
+    background-color: rgb(52,52,52);
+}
+
+.main-content {
+    flex: 1 75vw;
+}
+
+/* Side bar */
+.side-bar-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 8vh;
+    padding: 8px;
+    border-radius: 20px;
+}
+
+.create-project-button {
+    background: white;
+    border-radius: 50%;
+    height: 64px;
+    width: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.create-project-button img {
+    cursor: pointer;
+    height: 48px;
+    width: 48px;
+}
+/* Main content */
+
+    /* Main content header */
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 0.25px solid black;
+        padding: 12px 24px;
+        margin: 0 24px;
+    }
+
+    .main-title {
+        font-size: 48px;
+        font-family: 'Roboto Condensed', sans-serf;
+    }
+    
+    .header-right {
+        display: flex;
+        align-items: center;
+        width: 48px;
+    }
+
+    .create-task-button img {
+        padding: 4px;
+        background-color: white;
+        width: 36x;
+        height: 36px;
+        cursor: pointer;
+    }
+
+    /* Content box */
+    .content-box {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 24px 8px;
+    }
+
+    .project-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background-color: white;
+        margin-bottom: 8px;
+        border-radius: 10px;
+        border: 0.25px solid gainsboro;
+        padding: 12px 24px;
+    }
+
+    .unchecked-circle {
+        display: block;
+        border: 1px solid black;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .project-title {
+        font-size: 24px;
+        font-family: 'Roboto Condensed';
+        font-weight: 500;
+    }
