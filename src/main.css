@@ -178,10 +178,15 @@ body {
 
     .create-task-button img {
         padding: 4px;
-        background-color: white;
-        width: 36x;
-        height: 36px;
+        width: 48x;
+        height: 48px;
         cursor: pointer;
+    }
+
+    .drop-icon {
+        margin-top: 6px;
+        width: 24px;
+        height: 24px;
     }
 
     /* Content box */
@@ -194,13 +199,27 @@ body {
     /* Project Box */
     .project-box {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 16px;
+        justify-content: space-between;
         background-color: white;
         margin-bottom: 8px;
         border-radius: 15px;
         border: 0.25px solid gainsboro;
         padding: 12px 24px;
+    }
+
+    .project-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .project-header {
+        flex: 1 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .unchecked-circle {
@@ -218,14 +237,42 @@ body {
         font-weight: 500;
     }
 
+    .project-desc {
+        flex: 1 100%;
+        margin-top: 4px;
+        padding-top: 8px;
+        border-top: 0.25px solid black;
+    }
+
     /* Task box */
     .task-box {
         margin: 0 24px;
         padding: 12px 24px;
         background-color: white;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         font-size: 22px;
         gap: 16px;
         border-bottom: 0.25px solid black;  
+    }
+
+    .task-header {
+        display: flex;
+        flex: 1 100%;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .task-header span {
+        display: flex;
+        align-items: center;
+    }
+
+    .task-desc {
+        flex: 1 100%;
+        margin-top: 4px;
+        margin-bottom: 8px;
+        padding: 8px 16px;
+        background-color: whitesmoke;
     }

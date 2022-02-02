@@ -8,8 +8,9 @@ class Project {
 }
 
 class Task {
-    constructor(title) {
+    constructor(title, description) {
         this.title = title;
+        this.description = description;
     }
 }
 
@@ -22,7 +23,7 @@ const project = (function() {
     }
 
     function addTask(task, projectID) {
-        task.id = project.list[projectID]['tasks'].length+1;
+        task.id = project.list[projectID]['tasks'].length;
         project.list[projectID]['tasks'].push(task);
     }
 
@@ -30,8 +31,8 @@ const project = (function() {
 })();
 
 const task = (function() {
-    function create(title) {
-        let newTask = new Task(title);
+    function create(title, description) {
+        let newTask = new Task(title, description);
         return newTask
     }
 

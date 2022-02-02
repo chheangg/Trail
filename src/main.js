@@ -1,56 +1,67 @@
 import './main.css';
 import { task, project } from './app.js';
-import { mainLoad, formLoader, taskLoader, projectView} from './pageload.js';
+import { mainLoad, formLoader, taskLoader, projectController} from './pageload.js';
 import createProjectIcon from './createProjectIcon.png';
 import createTaskIcon from './create-button.png';
 
+// Create buttons and add events for creating forms
 let button = (function() {
     function create(types) {
         types.forEach((type) => {
             let btn = document.getElementsByClassName(`create-${type}-button`)[0];
-            let createButton = new Image();
-            
-            if (type === 'project') {
-                createButton.src = createProjectIcon;
-                createButton.classList.add('create-project');
-            } else if ( type === 'task') {
-                createButton.src = createTaskIcon;
-                createButton.classList.add('create-task');
-            }
-            btn.appendChild(createButton);
-            
+            _assign(type, btn);
             document.getElementsByClassName(`create-${type}-button`)[0].addEventListener('click',(button) => {
                 formController.create(`${type}`);
             });
         })
+    function _assign(type, btn) {
+        let createButton = new Image();
+        if (type === 'project') {
+            createButton.src = createProjectIcon;
+            createButton.classList.add('create-project');
+        } else if ( type === 'task') {
+            createButton.src = createTaskIcon;
+            createButton.classList.add('create-task');
+        }
+        btn.appendChild(createButton);
+    }
     }
     return {create};
 })()
 
+//Handle the creation of form and give it functionality
 let formController = (function() {
     function create(type) {
-        if (document.getElementsByClassName('form-wrapper')[0]) {
+        if(_disabledCheck(type)) {
+            formLoader.generate(type);
+            _eventAdder(type);
         }
-        formLoader.generate(type);
-        _eventAdder(type);
     }
     function _eventAdder(type) {
         let btn = document.getElementsByClassName('project-submit')[0];
         btn.addEventListener('click', () => {
-            project.create(...interfaceController.event(type));
             if (type === 'project') {
+                project.create(...interfaceController.event(type));
                 mainLoad(project.list);
             } else if (type === 'task') {
-                project.addTask(task.create(interfaceController.event(type)), projectView.current)
-                taskLoader.load(project.list[projectView.current]);
+                project.addTask(task.create(...interfaceController.event(type)), projectController.currentView)
+                taskLoader.load(project.list[projectController.currentView]);
             }
             formLoader.reset();
         })
     }
-    
+    function _disabledCheck(type) {
+        if ((project.list).length === 0 && type === 'task') {
+            return false;
+        } else {
+            return true;
+        }
+    }
     return {create}
 })();
 
+
+//Receive inputs from input boxes
 let interfaceController = (function() {
     function event(type) {
         if (type === 'project') {
@@ -59,7 +70,8 @@ let interfaceController = (function() {
             return [inputTitle.value, inputDescription.value];
         } else if ( type === 'task' ) {
             let inputTitle = document.getElementById('project-title');
-            return inputTitle.value;
+            let inputDescription = document.getElementById('project-description');
+            return [inputTitle.value, inputDescription.value];
         }
     }
     return {event}; 
