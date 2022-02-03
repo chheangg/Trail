@@ -16,18 +16,37 @@ class Task {
 
 const project = (function() {
     const list = [];
-    
+    let x = 0;
+    let y = 0;
+    function getId(type) {
+        if (type === 'project') {
+            x += 1
+            return +x;
+        }
+        if (type === 'task') {
+            y += 1
+            return +y;
+        }
+    }
     function create(title, description) {
-        let newProject = new Project(list.length, title, description);
+        let newProject = new Project(getId('project'), title, description);
         list.push(newProject);
     }
 
     function addTask(task, projectID) {
-        task.id = project.list[projectID]['tasks'].length;
+        task.id = getId('task');
         project.list[projectID]['tasks'].push(task);
     }
 
-    return { list, create, addTask };
+    function remove(target, parent) {
+        parent.forEach((foo) => {
+            if (foo.id === target.id) {
+                parent.splice(foo, 1);
+            }
+        })
+    }
+
+    return { list, create, addTask, remove };
 })();
 
 const task = (function() {

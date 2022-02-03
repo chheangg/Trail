@@ -269,10 +269,16 @@ body {
         align-items: center;
     }
 
+    .task-title {
+        font-weight: 500;
+        margin-left: 16px;
+    }
+
     .task-desc {
         flex: 1 100%;
         margin-top: 4px;
         margin-bottom: 8px;
         padding: 8px 16px;
         background-color: whitesmoke;
+        border: 0.5px dashed black;
     }

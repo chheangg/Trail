@@ -1,5 +1,8 @@
 import arrowDown from './arrowdown.png';
 import collapseIcon from './collapse.png';
+import {project} from './app.js';
+
+let mainProject = project;
 
 //Load the project and project's task
 function mainLoad(projects) {
@@ -7,8 +10,10 @@ function mainLoad(projects) {
     projects.forEach((project) => {
         projectController.load(project)
     })
-    if (projects[0]) {
+    if (projects[projectController.currentView]) {
         taskLoader.load(projects[projectController.currentView]);
+    } else {
+        taskLoader.reset();
     }
 
 }
@@ -48,12 +53,18 @@ let projectController = (function() {
         projectHeader.appendChild(projectContent)
         projectHeader.appendChild(dropWrapper);
         projectBox.appendChild(projectHeader);
-        projectBox.addEventListener('click', () => {
+        unchecked.addEventListener('click', (e) => {
+            checkController.check(project, mainProject.list)
+            mainLoad(mainProject.list);
+            e.stopPropagation()
+        })
+        projectBox.addEventListener('click', (e) => {
             taskLoader.load(project);
             projectController.changeView(project['id']);
+            e.stopPropagation()
         })
 
-        dropWrapper.addEventListener('click', () => {
+        dropWrapper.addEventListener('click', (e) => {
             boxController.handler({
                 id: project['id'],
                 icon: dropIcon,
@@ -61,6 +72,7 @@ let projectController = (function() {
                 desc: project['description'],
                 type: 'project',
             })
+            e.stopPropagation()
         })
     }
     
@@ -104,8 +116,12 @@ let taskLoader = (function() {
             taskContent.appendChild(taskTitle);
             dropWrapper.appendChild(dropIcon);
             taskHeader.appendChild(dropWrapper);
-
-            dropWrapper.addEventListener('click', () => {
+            unchecked.addEventListener('click', (e) => {
+                checkController.check(task, project.tasks)
+                mainLoad(mainProject.list);
+                e.stopPropagation()
+            })
+            dropWrapper.addEventListener('click', (e) => {
                 boxController.handler({
                     id: task['id'],
                     icon: dropIcon,
@@ -113,6 +129,7 @@ let taskLoader = (function() {
                     desc: task['description'],
                     type: 'task',
                 })
+                e.stopPropagation()
             })
 
         })
@@ -240,6 +257,11 @@ let boxController = (function() {
     return {handler}
 })()
 
-
+const checkController = (function() {
+    function check(target, parent) {
+        project.remove(target, parent);
+    }
+    return {check};
+})()
 
 export {mainLoad, formLoader, taskLoader, projectController};
