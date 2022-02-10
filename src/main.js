@@ -4,6 +4,13 @@ import { mainLoad, formLoader, taskLoader, projectController} from './pageload.j
 import createProjectIcon from './createProjectIcon.png';
 import createTaskIcon from './create-button.png';
 
+if (localStorage.getItem('project')) {
+    project.getList(JSON.parse(localStorage.project));
+    mainLoad(project.list);
+  }
+
+
+
 // Create buttons and add events for creating forms
 let button = (function() {
     function create(types) {
@@ -44,8 +51,12 @@ let formController = (function() {
                 project.create(...interfaceController.event(type));
                 mainLoad(project.list);
             } else if (type === 'task') {
-                project.addTask(task.create(...interfaceController.event(type)), projectController.currentView)
-                taskLoader.load(project.list[projectController.currentView]);
+                project.addTask(task.create(...interfaceController.event(type), projectController.currentView), projectController.currentView)
+                project.list.forEach((proj) => {
+                    if (proj.id == projectController.currentView) {
+                        taskLoader.load(proj);
+                    }
+                })
             }
             formLoader.reset();
         })

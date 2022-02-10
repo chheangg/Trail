@@ -8,14 +8,20 @@ class Project {
 }
 
 class Task {
-    constructor(title, description) {
+    constructor(title, description, parentID) {
         this.title = title;
         this.description = description;
+        this.parentID = parseInt(parentID);
     }
 }
 
 const project = (function() {
     const list = [];
+    function getList(lists) {
+        lists.forEach((listed) => {
+            list.push(listed);
+        })
+    }
     let x = 0;
     let y = 0;
     function getId(type) {
@@ -35,7 +41,11 @@ const project = (function() {
 
     function addTask(task, projectID) {
         task.id = getId('task');
-        project.list[projectID]['tasks'].push(task);
+        project.list.forEach((proj) => {
+            if (proj.id == projectID) {
+                proj.tasks.push(task);
+            }
+        })
     }
 
     function remove(target, parent) {
@@ -46,12 +56,12 @@ const project = (function() {
         })
     }
 
-    return { list, create, addTask, remove };
+    return { list, create, addTask, remove, getList };
 })();
 
 const task = (function() {
-    function create(title, description) {
-        let newTask = new Task(title, description);
+    function create(title, description, parentID) {
+        let newTask = new Task(title, description, parentID);
         return newTask
     }
 

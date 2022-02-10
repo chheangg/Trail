@@ -183,10 +183,15 @@ body {
         cursor: pointer;
     }
 
+    .expand {
+        cursor: pointer;
+    }
+
     .drop-icon {
         margin-top: 6px;
         width: 24px;
         height: 24px;
+        cursor: pointer;
     }
 
     /* Content box */
@@ -207,6 +212,7 @@ body {
         border-radius: 15px;
         border: 0.25px solid gainsboro;
         padding: 12px 24px;
+        transition: height 400ms ease-out;
     }
 
     .project-content {
@@ -281,4 +287,9 @@ body {
         padding: 8px 16px;
         background-color: whitesmoke;
         border: 0.5px dashed black;
+        cursor: pointer;
+    }
+
+    input[type='text'] {
+        width: 100%;
     }

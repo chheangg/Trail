@@ -4,26 +4,19 @@ import {project} from './app.js';
 
 let mainProject = project;
 
-//Load the project and project's task
-function mainLoad(projects) {
-    document.getElementsByClassName('project-sidebar')[0].textContent= '';
-    projects.forEach((project) => {
-        projectController.load(project)
-    })
-    if (projects[projectController.currentView]) {
-        taskLoader.load(projects[projectController.currentView]);
-    } else {
-        taskLoader.reset();
-    }
-
-}
-
 //Generate project's element and keep track of current project's view
 let projectController = (function() {
-    let currentView = '0';
+    let currentView = '1';
     function changeView(newView) {
-        projectController.current = newView;
+        projectController.currentView = newView;
     }; 
+    function projectCheck(currentView) {
+        project.list.forEach((proj) => {
+            if (proj.id == currentView) {
+                return true;
+            }
+        })
+    }
     function load(project) {
         let projectBox = document.createElement('div');
         let projectContent = document.createElement('span');
@@ -60,7 +53,7 @@ let projectController = (function() {
         })
         projectBox.addEventListener('click', (e) => {
             taskLoader.load(project);
-            projectController.changeView(project['id']);
+            projectController.changeView(project.id);
             e.stopPropagation()
         })
 
@@ -77,7 +70,7 @@ let projectController = (function() {
     }
     
 
-    return {load, currentView, changeView};
+    return {load, currentView, changeView, projectCheck};
 })()
 
 let taskLoader = (function() {
@@ -87,7 +80,6 @@ let taskLoader = (function() {
     function load(project) {
         reset();
         project["tasks"].forEach((task) => {
-            console.log(task);
             let taskBox = document.createElement('div');
             let taskHeader = document.createElement('div');
             let taskContent = document.createElement('span');
@@ -107,7 +99,6 @@ let taskLoader = (function() {
             dropIcon.classList.add('drop-icon');
 
             dropIcon.src = arrowDown;
-
             document.getElementsByClassName('task-mainbox')[0].appendChild(taskBox);
 
             taskBox.appendChild(taskHeader)
@@ -127,6 +118,7 @@ let taskLoader = (function() {
                     icon: dropIcon,
                     el: dropWrapper,
                     desc: task['description'],
+                    parentID: project.id,
                     type: 'task',
                 })
                 e.stopPropagation()
@@ -222,10 +214,38 @@ let boxController = (function() {
             _expand(box);
         }
     }
-
+    function edit(box, desc) {
+        let boxInput = document.createElement('input');
+        boxInput.setAttribute('type', 'text');
+        boxInput.value = desc.textContent;
+        boxInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                desc.textContent = boxInput.value;
+                if (box.type === 'project') {
+                    mainProject.list.forEach((item) => {
+                        if (item.id === box.id) {
+                            item.description = boxInput.value;
+                        }
+                    })
+                } else if (box.type === 'task') {
+                    mainProject.list.forEach((item) => {
+                        if (item.id === box.parentID) {
+                            item.tasks.forEach((task) => {
+                                if (task.id === box.id) {
+                                    task.description = boxInput.value;
+                                }
+                            })
+                        }
+                    })
+                }
+            }
+        })
+        desc.textContent = '';
+        desc.appendChild(boxInput);
+    }
     function _collapse(box) {
         let boxDesc = document.createElement('div');
-
+        
         let boxContainer = document.querySelectorAll(`.${box['type']}-${box['id']}`)[0];
 
         boxDesc.classList.add(`${box['type']}-desc`);
@@ -237,6 +257,9 @@ let boxController = (function() {
         box['el'].classList.add('expand')
         box['el'].classList.remove('collapse')
 
+        boxDesc.addEventListener('click',(desc) => {
+            edit(box, desc.target);
+        })
         _iconChange(box['icon'], collapseIcon)
     }
     
@@ -263,5 +286,19 @@ const checkController = (function() {
     }
     return {check};
 })()
+
+//Load the project and project's task
+function mainLoad(projects) {
+    document.getElementsByClassName('project-sidebar')[0].textContent= '';
+    projects.forEach((project) => {
+        projectController.load(project)
+    })
+    if (projectController.projectCheck()) {
+        taskLoader.load(projectCheck());
+    } else {
+        taskLoader.reset();
+    }
+    localStorage.setItem('project', JSON.stringify(project.list));
+}
 
 export {mainLoad, formLoader, taskLoader, projectController};
