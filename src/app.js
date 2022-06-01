@@ -1,7 +1,8 @@
-import { projectController } from './pageload';
+import { projectController, formController } from './pageload';
 
-function mainLoad(projects) {
-  projectController.load(projects);
+function mainLoad(projectList) {
+  projectController.load(projectList.projects);
+  formController.addFormEvent('project', projectList.addProject.bind(projectList));
 }
 
 export default mainLoad;

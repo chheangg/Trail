@@ -1,6 +1,8 @@
 import 'normalize.css';
 import './main.css';
-import BoxObject from './object';
+import { ProjectList } from './object';
 import mainLoad from './app';
 
-mainLoad();
+const list = ProjectList();
+
+mainLoad(list);

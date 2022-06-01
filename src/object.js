@@ -18,6 +18,7 @@ function Task(title, description) {
 function Project(title, description) {
   function addTask(task) {
     this.tasks = [...this.tasks, task];
+    return this.tasks;
   }
 
   function deleteTask(taskId) {
@@ -41,6 +42,32 @@ function Project(title, description) {
   };
 }
 
+function ProjectList(id, projects) {
+  function addProject(project) {
+    this.projects = [...this.projects, project];
+    return this.projects;
+  }
+
+  function deleteProject(project) {
+    this.projects = this.projects.filter((obj) => obj.id !== project.id);
+    return this.projects;
+  }
+  if (!id && !projects) {
+    return {
+      id: uniqid(),
+      projects: [],
+      addProject,
+      deleteProject,
+    };
+  }
+  return {
+    id,
+    projects,
+    addProject,
+    deleteProject,
+  };
+}
+
 function BoxObject(type, title, description) {
   if (type === 'task') {
     return Task(title, description);
@@ -50,4 +77,4 @@ function BoxObject(type, title, description) {
   }
 }
 
-export default BoxObject;
+export { BoxObject, ProjectList };
