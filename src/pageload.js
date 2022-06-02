@@ -95,7 +95,10 @@ const editController = (function controller() {
   }
 
   function onLeave(container) {
-    container.removeChild(document.getElementsByClassName('edit-btn')[0]);
+    if (!container.getElementsByClassName('edit-btn')[0]) {
+      return;
+    }
+    container.removeChild(container.getElementsByClassName('edit-btn')[0]);
   }
   return {
     onHover,

@@ -179,7 +179,6 @@ body {
 
 .project-container:hover {
     background-color: gainsboro;
-    transform: translateY(-0.25rem);
     color: #1f2937;
 }
 
