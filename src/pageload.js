@@ -1,4 +1,6 @@
 import { BoxObject } from './object';
+import editIcon from './assets/pencil.svg';
+import tickIcon from './assets/check.svg';
 
 function sizer(description) {
   const descStyle = description.style;
@@ -25,7 +27,85 @@ function setStatus(isDone, element, callback) {
   return 'finished';
 }
 
+const editController = (function controller() {
+  function loadForm(container, title, description, object) {
+    const inputTitle = document.createElement('input');
+    const inputDescription = document.createElement('textarea');
+    const submitEdit = document.createElement('button');
+    const submitConfirmIcon = document.createElement('img');
+
+    inputTitle.className = 'edit-title';
+    inputDescription.className = 'edit-desc';
+    submitEdit.className = 'edit-confirm';
+
+    inputTitle.value = object.title;
+    inputDescription.value = object.description;
+    submitConfirmIcon.src = tickIcon;
+    submitEdit.appendChild(submitConfirmIcon);
+
+    inputDescription.setAttribute('rows', '3');
+    if (object.type === 'project') {
+      inputDescription.setAttribute('cols', '42');
+    } else if (object.type === 'task') {
+      inputDescription.setAttribute('cols', '115');
+    }
+
+    title.appendChild(inputTitle);
+    title.appendChild(submitEdit);
+    description.appendChild(inputDescription);
+
+    submitEdit.addEventListener('click', () => {
+      const obj = object;
+      obj.title = inputTitle.value;
+      obj.description = inputDescription.value;
+
+      if (object.type === 'project') {
+        projectController.reload();
+      }
+      if (object.type === 'task') {
+        taskController.reload();
+      }
+    });
+  }
+  function loadEdit(container, object, handler) {
+    const btn = document.createElement('button');
+    const img = document.createElement('img');
+
+    img.src = editIcon;
+    btn.className = 'edit-btn';
+
+    btn.addEventListener('click', () => {
+      const title = container.getElementsByClassName(`${object.type}-title-container`)[0];
+      const description = container.getElementsByClassName(`${object.type}-desc`)[0];
+
+      title.removeEventListener('mouseenter', handler[0]);
+      title.removeEventListener('mouseleave', handler[1]);
+
+      title.textContent = '';
+      description.textContent = '';
+
+      loadForm(container, title, description, object);
+    });
+
+    btn.appendChild(img);
+    return btn;
+  }
+  function onHover(titleContainer, container, object, handler) {
+    titleContainer.appendChild(loadEdit(container, object, handler));
+  }
+
+  function onLeave(container) {
+    container.removeChild(document.getElementsByClassName('edit-btn')[0]);
+  }
+  return {
+    onHover,
+    onLeave,
+  };
+}());
+
 const taskController = (function controller() {
+  let currentView;
+  let currentUtility;
   const container = [...document.getElementsByClassName('task-mainbox')][0];
   function reset() {
     container.textContent = '';
@@ -44,6 +124,7 @@ const taskController = (function controller() {
     const taskBox = document.createElement('div');
     const taskHeader = document.createElement('div');
     const taskSizer = document.createElement('button');
+    const taskTitleCont = document.createElement('div');
     const taskTitle = document.createElement('div');
     const taskDescription = document.createElement('div');
 
@@ -51,6 +132,7 @@ const taskController = (function controller() {
     taskBox.className = 'task-container';
     taskBox.dataset.id = task.id;
     taskHeader.className = 'task-header';
+    taskTitleCont.className = 'task-title-container';
     taskTitle.className = 'task-title';
     taskSizer.className = 'task-sizer';
     taskDescription.className = 'task-desc';
@@ -59,7 +141,8 @@ const taskController = (function controller() {
     taskSizer.textContent = 'TBA';
     taskTitle.textContent = task.title;
     taskDescription.textContent = task.description;
-    [taskStatus, taskTitle, taskSizer].forEach((obj) => taskHeader.appendChild(obj));
+    taskTitleCont.appendChild(taskTitle);
+    [taskStatus, taskTitleCont, taskSizer].forEach((obj) => taskHeader.appendChild(obj));
     [taskHeader, taskDescription].forEach((obj) => taskBox.appendChild(obj));
 
     taskStatus.addEventListener('click', (box) => {
@@ -70,20 +153,45 @@ const taskController = (function controller() {
     taskSizer.addEventListener('click', () => {
       sizer(taskDescription);
     });
+
+    taskTitleCont.addEventListener('mouseenter', function Handler() {
+      function onLeaveHandler() {
+        editController.onLeave(taskTitleCont);
+      }
+      taskTitleCont.addEventListener('mouseleave', onLeaveHandler);
+      editController.onHover(taskTitleCont, taskBox, task, [Handler, onLeaveHandler]);
+    });
+
     return taskBox;
   }
   function load(tasks, utility) {
+    currentView = tasks;
+    currentUtility = utility;
+    // Reset everything in the task area
     reset();
+    // Load button with new events
     loadButton();
+    // Give button with necessary events
     formController.addFormEvent('task', utility);
+    // Load tasks
     const taskBoxes = tasks.map((task) => create(task, utility.deleteTask));
     taskBoxes.forEach((box) => container.appendChild(box));
   }
 
-  return { load };
+  function reload(tasks) {
+    console.log(currentUtility);
+    if (tasks) {
+      load(tasks, currentUtility);
+    } else {
+      load(currentView, currentUtility);
+    }
+  }
+
+  return { load, reload };
 }());
 
 const projectController = (function controller() {
+  let projectList;
   function reset() {
     document.getElementsByClassName('project-sidebar')[0].textContent = '';
   }
@@ -93,6 +201,7 @@ const projectController = (function controller() {
     const projectBox = document.createElement('div');
     const projectHeader = document.createElement('div');
     const projectSizer = document.createElement('button');
+    const projectTitleCont = document.createElement('div');
     const projectTitle = document.createElement('div');
     const projectDescription = document.createElement('div');
 
@@ -100,6 +209,7 @@ const projectController = (function controller() {
     projectBox.className = 'project-container';
     projectBox.dataset.id = project.id;
     projectHeader.className = 'project-header';
+    projectTitleCont.className = 'project-title-container';
     projectTitle.className = 'project-title';
     projectSizer.className = 'project-sizer';
     projectDescription.className = 'project-desc';
@@ -108,7 +218,9 @@ const projectController = (function controller() {
     projectSizer.textContent = 'TBA';
     projectTitle.textContent = project.title;
     projectDescription.textContent = project.description;
-    [projectStatus, projectTitle, projectSizer].forEach((obj) => projectHeader.appendChild(obj));
+    projectTitleCont.appendChild(projectTitle);
+    [projectStatus, projectTitleCont, projectSizer]
+      .forEach((obj) => projectHeader.appendChild(obj));
     [projectHeader, projectDescription].forEach((obj) => projectBox.appendChild(obj));
 
     projectStatus.addEventListener('click', () => {
@@ -124,17 +236,35 @@ const projectController = (function controller() {
         addTask: project.addTask.bind(project),
       });
     });
+    projectTitleCont.addEventListener('mouseenter', function Handler() {
+      function onLeaveHandler() {
+        editController.onLeave(projectTitleCont);
+      }
+      projectTitleCont.addEventListener('mouseleave', onLeaveHandler);
+      editController.onHover(projectTitleCont, projectBox, project, [Handler, onLeaveHandler]);
+    });
+
     return projectBox;
   }
 
   function load(projects) {
     reset();
+    projectList = projects;
     const projectsContainer = [...document.getElementsByClassName('project-sidebar')][0];
     const projectBoxes = projects.map((project) => create(project));
     projectBoxes.forEach((box) => projectsContainer.appendChild(box));
   }
 
-  return { load };
+  function reload(project) {
+    if (project) {
+      load(project);
+      projectList = project;
+    } else {
+      load(projectList);
+    }
+  }
+
+  return { load, reload, projectList };
 }());
 
 const formController = (function controller() {
@@ -166,16 +296,16 @@ const formController = (function controller() {
 
     if (type === 'project') {
       submitBtn.addEventListener('click', () => {
-        const newList = callback(BoxObject(type, inputTitle.value, inputDesc.value));
-        resetter(newList);
+        const projects = callback(BoxObject(type, inputTitle.value, inputDesc.value));
+        resetter(projects);
         reset(wrapper, container);
       });
     }
 
     if (type === 'task') {
       submitBtn.addEventListener('click', () => {
-        const newList = callback.addTask(BoxObject(type, inputTitle.value, inputDesc.value));
-        resetter(newList, callback);
+        const tasks = callback.addTask(BoxObject(type, inputTitle.value, inputDesc.value));
+        resetter(tasks);
         reset(wrapper, container);
       });
     }
@@ -205,13 +335,13 @@ const formController = (function controller() {
     if (type === 'project') {
       const btn = document.getElementsByClassName('create-project-button')[0];
       btn.addEventListener('click', () => {
-        loadForm(type, callback, projectController.load);
+        loadForm(type, callback, projectController.reload);
       });
     }
     if (type === 'task') {
       const btn = document.getElementsByClassName('create-task-button')[0];
       btn.addEventListener('click', () => {
-        loadForm(type, callback, taskController.load);
+        loadForm(type, callback, taskController.reload);
       });
     }
   }

@@ -191,7 +191,14 @@ body {
     grid-template-columns: auto 1fr auto;
 }
 
+.project-title-container {
+    display: flex;
+    gap: 1rem;
+}
+
 .project-title {
+    min-height: 1.5rem;
+    min-width: 1.5rem;
     font-size: 1.5rem;
     font-weight: 600;
 }
@@ -202,6 +209,7 @@ body {
     padding: 1rem;
     background-color: gray;
     color: white;
+    display: block;
 }
 
 .unfinished, .finished {
@@ -232,6 +240,17 @@ body {
 .task-container:hover {
     transform: translateY(-0.25rem);
 }
+
+.task-title-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.task-title {
+    min-height: 1.5rem;
+    min-width: 1.5rem;
+}
+
 .task-header {
     background-color: #d6d6d6;
     display: grid;
@@ -310,4 +329,15 @@ body {
     resize: none;  
 }
 
+/* Utility Buttons */
+.edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
 
+.edit-confirm {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
